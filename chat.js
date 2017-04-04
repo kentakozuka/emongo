@@ -15,22 +15,18 @@ var mongo_db = null, co_messages;
 
 
 // MongoDBへ接続
-// 既に接続していれば何もしない
-if (!mongo_db) {
-	// MongoDBに接続
-	// herokuの環境変数にDBのURIが設定されている
-	// heroku config --app <アプリ名>でわかる
-	mongo_client.connect(process.env.MONGOLAB_URI, function (err, db) {
-		// エラーチェック
-		if (err) {
-			console.log("DB error", err);
-		}
-		// 接続情報を記録
-		mongo_db = db;
-		// コレクションを取得
-		co_messages = db.collection('co_messages');
-	});
-}
+// herokuの環境変数にDBのURIが設定されている
+// heroku config --app <アプリ名>でわかる
+mongo_client.connect(process.env.MONGOLAB_URI, function (err, db) {
+	// エラーチェック
+	if (err) {
+		console.log("DB error", err);
+	}
+	// 接続情報を記録
+	mongo_db = db;
+	// コレクションを取得
+	co_messages = db.collection('co_messages');
+});
 
 //ユーザ数を格納するグローバル変数
 var userCnt = {
