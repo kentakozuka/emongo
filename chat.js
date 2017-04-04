@@ -6,7 +6,7 @@ var app				= express();
 var http			= require('http').Server(app);
 var io				= require('socket.io')(http);
 var mongo_client	= require('mongodb').MongoClient;
-var POST			= process.env.PORT || 8080;
+var PORT			= process.env.PORT || 8080;
 
 
 // MongoDBの接続情報を保持する変数
@@ -17,7 +17,9 @@ var mongo_db = null, co_messages;
 // MongoDBへ接続
 // herokuの環境変数にDBのURIが設定されている
 // heroku config --app <アプリ名>でわかる
-console.log(process.env.MONGOLAB_URI);
+//TODO:ここでundefinedが出てる
+console.log(process.env.MONGODB_URI);
+
 mongo_client.connect(process.env.MONGOLAB_URI, function (err, db) {
 	// エラーチェック
 	if (err) {
