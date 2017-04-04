@@ -80,7 +80,7 @@ io.on('connection', function(socket) {
 	 * 同じチャンネルの人にメッセージを送る
 	 * @param	String	msj	ユーザが送信したメッセージ
 	 **/
-	socket.on('message', function(msj) {
+	socket.on('message', function(msg) {
 		//kenta_botのとき
 		if(channel == 'kenta_bot') {
 			//Botクラスの関数の呼び出し
