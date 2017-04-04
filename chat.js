@@ -169,6 +169,6 @@ io.on('connection', function(socket) {
 });
 
 //接続待ち状態になる
-http.listen(POST, function() {
-	console.log('接続開始：', POST);
+http.listen(PORT, function() {
+	console.log('接続開始：', PORT);
 });
