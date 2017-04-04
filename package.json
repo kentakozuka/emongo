@@ -6,7 +6,9 @@
   "dependencies": {
     "express": "*",
     "socket.io": "*",
-    "mongodb": "^2.0.35"
+    "mongodb": "^2.0.35",
+    "fs": "*",
+    "mecab-lite": "0.0.8"
   },
   "devDependencies": {},
   "scripts": {

@@ -6,6 +6,7 @@ var app				= express();
 var http			= require('http').Server(app);
 var io				= require('socket.io')(http);
 var mongo_client	= require('mongodb').MongoClient;
+var bot				= require('./chat-server-bot.js');
 var PORT			= process.env.PORT || 8080;
 
 
@@ -16,10 +17,7 @@ var mongo_db = null, co_messages;
 
 // MongoDBへ接続
 // herokuの環境変数にDBのURIが設定されている
-// heroku config --app <アプリ名>でわかる
-//TODO:ここでundefinedが出てる
-console.log(process.env.MONGODB_URI);
-
+// heroku config
 mongo_client.connect(process.env.MONGODB_URI, function (err, db) {
 	// エラーチェック
 	if (err) {
@@ -68,7 +66,7 @@ io.on('connection', function(socket) {
 	co_messages
 	.find()
 	.toArray(function(err, rows) {
-		//TODO:エラー処理
+		if(err) {};
 		//「ようこそ」と「ID」を自分の画面だけに表示
 		socket.emit('welcome', rows);
 		socket.emit('get id', socket.id);
@@ -76,20 +74,6 @@ io.on('connection', function(socket) {
 		//接続時に同じチャンネルの人に入室を伝える
 		socket.broadcast.to(channel).emit('message', socket.id + 'さんが入室しました！', 'system'); 
 	});
-	//DBから今までのメッセージを取ってきて自分だけに表示
-    //connection.query('SELECT * from t_comment', function(err, rows, fields) {
-        //if (err) {
-            //console.log('error: ', err);
-            //throw err;
-        //}
-		////「ようこそ」と「ID」を自分の画面だけに表示
-		//socket.emit('welcome', rows);
-		//socket.emit('get id', socket.id);
-	
-		//接続時に同じチャンネルの人に入室を伝える
-		//socket.broadcast.to(channel).emit('message', socket.id + 'さんが入室しました！', 'system'); 
-    //});
-	
 
 	/**
 	 * 'message'イベント関数
@@ -97,6 +81,18 @@ io.on('connection', function(socket) {
 	 * @param	String	msj	ユーザが送信したメッセージ
 	 **/
 	socket.on('message', function(msj) {
+		//kenta_botのとき
+		if(channel == 'kenta_bot') {
+			//Botクラスの関数の呼び出し
+			bot.getResponse(msg, function(bot_msg) {
+				//body = JSON.stringify({"msg": bot_msg});
+				//同じチャンネルの人に送信
+				io.sockets.in(channel).emit('message', bot_msg, socket.id);
+			});
+		}
+
+
+		//同じチャンネルの人に送信
 		io.sockets.in(channel).emit('message', msj, socket.id);
 
 		co_messages
@@ -105,15 +101,6 @@ io.on('connection', function(socket) {
 				//commentからmessageにキーを変更
 			,	message		: msj
 		});
-		//DBに保存
-		//connection.query(
-				//'INSERT INTO t_comment SET ?'
-			//,	{user_id: socket.id, comment: msj}
-			//,	function(err, result) {
-					//if (err) throw err;
-					//console.log(result.insertId);
-				//}
-		//);
 	});
 	
 	/**
