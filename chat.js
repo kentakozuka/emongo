@@ -17,6 +17,7 @@ var mongo_db = null, co_messages;
 // MongoDBへ接続
 // herokuの環境変数にDBのURIが設定されている
 // heroku config --app <アプリ名>でわかる
+console.log(process.env.MONGOLAB_URI);
 mongo_client.connect(process.env.MONGOLAB_URI, function (err, db) {
 	// エラーチェック
 	if (err) {
