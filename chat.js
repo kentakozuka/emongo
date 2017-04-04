@@ -78,7 +78,7 @@ io.on('connection', function(socket) {
 	/**
 	 * 'message'イベント関数
 	 * 同じチャンネルの人にメッセージを送る
-	 * @param	String	msj	ユーザが送信したメッセージ
+	 * @param	String	msg	ユーザが送信したメッセージ
 	 **/
 	socket.on('message', function(msg) {
 		//kenta_botのとき
@@ -93,13 +93,13 @@ io.on('connection', function(socket) {
 
 
 		//同じチャンネルの人に送信
-		io.sockets.in(channel).emit('message', msj, socket.id);
+		io.sockets.in(channel).emit('message', msg, socket.id);
 
 		co_messages
 		.insert({
 				user_id		: socket.id
 				//commentからmessageにキーを変更
-			,	message		: msj
+			,	message		: msg
 		});
 	});
 	
