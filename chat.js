@@ -81,19 +81,19 @@ io.on('connection', function(socket) {
 	 * @param	String	msg	ユーザが送信したメッセージ
 	 **/
 	socket.on('message', function(msg) {
+		console.log(channel);
 		//kenta_botのとき
 		if(channel == 'kenta_bot') {
 			//Botクラスの関数の呼び出し
 			bot.getResponse(msg, function(bot_msg) {
 				//body = JSON.stringify({"msg": bot_msg});
 				//同じチャンネルの人に送信
-				io.sockets.in(channel).emit('message', bot_msg, socket.id);
+				io.sockets.in(channel).emit('message', bot_msg, 'ボット');
 			});
+		} else {
+			//同じチャンネルの人に送信
+			io.sockets.in(channel).emit('message', msg, socket.id);
 		}
-
-
-		//同じチャンネルの人に送信
-		io.sockets.in(channel).emit('message', msg, socket.id);
 
 		co_messages
 		.insert({
