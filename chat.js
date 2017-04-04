@@ -20,7 +20,7 @@ var mongo_db = null, co_messages;
 //TODO:ここでundefinedが出てる
 console.log(process.env.MONGODB_URI);
 
-mongo_client.connect(process.env.MONGOLAB_URI, function (err, db) {
+mongo_client.connect(process.env.MONGODB_URI, function (err, db) {
 	// エラーチェック
 	if (err) {
 		console.log("DB error", err);
