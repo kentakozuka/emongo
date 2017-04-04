@@ -24,14 +24,11 @@ if (!mongo_db) {
 		// エラーチェック
 		if (err) {
 			console.log("DB error", err);
-			return reject();
 		}
 		// 接続情報を記録
 		mongo_db = db;
 		// コレクションを取得
-		co_messages = db.collection('keywords');
-
-		resolve();
+		co_messages = db.collection('co_messages');
 	});
 }
 
