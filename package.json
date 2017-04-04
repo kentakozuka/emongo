@@ -1,0 +1,31 @@
+{
+  "name": "erorochat",
+  "version": "0.0.0",
+  "description": "realtime chat",
+  "main": "chat.js",
+  "dependencies": {
+    "express": "*",
+    "socket.io": "*",
+    "mongodb": "^2.0.35"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node chat.js"
+  },
+  "engines": {
+    "node": "0.11.11"
+  },
+  "author": "kentakozuka",
+  "license": "ISC",
+  "directories": {
+    "doc": "doc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kentakozuka/chat.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kentakozuka/chat/issues"
+  },
+  "homepage": "https://github.com/kentakozuka/chat#readme"
+}

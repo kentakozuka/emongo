@@ -35,4 +35,10 @@ herokuのリモートレポジトリを追加するコマンド
 heroku上で任意のコマンドを実行  
 `heroku run "<コマンド>"`  
 `heroku run "node make-dic.js"`  
-# emongo
+
+`heroku addons:servies | grep mongolab`  
+
+`heroku addons:plans mongolab`  
+
+`heroku addons:create mongolab:sandbox --app emongo`  
+

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>eroroChat</title>
+<style>
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+body {
+	font-family: Verdana;
+}
+ul {
+	list-style-type: none;
+	padding: 30px;
+	margin-bottom: 160px;
+	background-color: #4682B4;
+	color: white;
+}
+#controls {
+	position: fixed;
+	bottom: 0px;
+	left: 0px;
+	padding: 20px;
+	margin-top: -160px;
+	display: block;
+	width: 100%;
+	background-color: #4682B4;
+}
+#controls #msj {
+	float: left;
+	width: 78%;
+	display: block;
+	padding: 20px;
+	border-radius: 5px;
+}
+#controls #btn {
+	float: right;
+	width: 20%;
+	height: 57px;
+	display: block;
+	background: white;
+	border: 1px solid #aaa;
+	font-size: 1.4em;
+	border-radius: 5px;
+}
+#controls #channel {
+	display: block;
+	width: 100%;
+	font-size: 1.2em;
+	padding: 20px;
+	background: white;
+	margin-bottom: 10px;
+	height: 45px;
+}
+#info {
+	padding: 15px 10px;
+	background: #efefef;
+}
+#user_name p,
+#user_cnt p {
+	display: inline-block;
+}
+</style>
+<!-- SocketIOを持ってくる -->
+<script src="/socket.io/socket.io.js"></script>
+<!-- JQueryを持ってくる -->
+<script src="//code.jquery.com/jquery-1.11.1.js"></script>
+</head>
+<body>
+<script>
+//サーバー側とつなぐため
+var socket = io();
+
+/***********************************
+ * JQuery（画面）のイベントハンドラの登録
+ * 詳細は以下参照
+ * https://api.jquery.com/
+ ***********************************/
+//HTMLの読み込みが終わった時点で実行される
+$(function() {
+
+	/**
+	 * 送信されたときの処理  
+ 	**/
+	$('form').submit(function() {
+		// メッセージを取得
+		var mensaje = $('#msj').val();
+		
+		// メッセージがなければ終了 
+		if (mensaje === '') return false;
+		
+		// メッセージを送信
+		socket.emit('message', mensaje);
+		
+		// メッセージの中身を空にしえフォーカスする
+		$('#msj').val('').focus();
+		return false;
+	});
+
+	/**
+	 * チャンネルを変えた時の処理
+ 	**/
+	$('#channel').on('change', function() {
+		// チャンネル変更する
+		socket.emit('change channel', $('#channel').val());
+	});
+});
+
+/***********************************
+ * Socket.IOのイベントハンドラの登録
+ * 詳細は以下参照
+ * https://socket.io/
+ ***********************************/
+/**
+ * 接続したときに呼ばれるイベント
+ * ここで作ったイベント名でサーバーサイドの処理を紐付ける
+ **/
+socket.on('welcome', function(messageArray) {
+	//debug
+	//console.log(messageArray);
+
+	//取得したメッセージをulに追加
+	$('#message').append($('<li>').text('ようこそ！！'));
+
+	//DBから取得したメッセージをulに追加
+	messageArray.forEach(function(msg) {
+		//console.log(msg);
+		$('#message').append($('<li>').text(msg.user_id + " : " + msg.comment));
+	});
+});
+
+/**
+ * 全ユーザ上のユーザ数を更新
+ **/
+socket.on('user cnt', function(cnt) {
+	// 取得したメッセージをulに追加
+	$('#user_cnt p').html('').text("(A :" + cnt.a +"人) (B :" + cnt.b + "人)");
+});
+
+/**
+ * 誰かがメッセージを送信したときに呼ばれる
+ * @param メッセージ
+ * @param ユーザID
+ **/
+socket.on('message', function(msj, id) {
+	// 取得したメッセージをulに追加
+	$('#message').append($('<li>').text(id + " : " + msj));
+});
+
+/**
+ * チャンネルが変更されたときに呼ばれるイベント
+ * @param チャンネル
+ **/
+socket.on('change channel', function(channel) {
+	// チャンネルが変わったことをメッセージで表示
+	$('#message').html('').append($('<li>').text('「チャンネル' + channel + '」に変更されました!'));
+});
+
+/**
+ * チャンネルが変わったことをメッセージで表示
+ **/
+socket.on('get id', function(id) {
+	$('#user_name p').html('').text(id);
+});
+</script>
+  <div id="info">
+    <div id="user_name">あなたのID&nbsp;:&nbsp;<p></p></div>
+    <div id="user_cnt">アクティブユーザ&nbsp;:&nbsp;<p></p></div>
+  </div>
+  <ul id="message"></ul>
+  <div id="controls">
+    <form action="">
+    <select name="channel" id="channel">
+      <option value="A">チャンネルA</option>
+      <option value="B">チャンネルB</option>
+      <option value="kenta_bot">kentaのbotチャンネル</option>
+    </select>
+    <input type="text" id="msj" placeholder="メッセージを入力してください...">
+    <input type="submit" id="btn" value="送信">
+    </form> 
+ </div>
+</body>
+</html>
