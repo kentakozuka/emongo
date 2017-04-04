@@ -32,7 +32,7 @@ mongo_client.connect(process.env.MONGODB_URI, function (err, db) {
 });
 
 // 会話辞書テキストファイルの指定
-var FILE_DIC = '/doc/bot-dic.dat';
+var FILE_DIC = 'bot-dic.dat';
 
 /**
  * MongoDBに辞書データを挿入
